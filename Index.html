@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET Mission Tracker - Doctor Ban Ke Rahenge</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        },
+                        aiims: {
+                            blue: '#1e3a8a',
+                            cyan: '#06b6d4',
+                            dark: '#0f172a',
+                            card: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #059669;
+            border-radius: 4px;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-200">
+
+    <!-- Top Sticky Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-user-doctor text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+                        NEET Target Tracker 🩺
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">Mission AIIMS / Top Medical College</p>
+                </div>
+            </div>
+
+            <!-- Quick Action controls -->
+            <div class="flex items-center space-x-3">
+                <button onclick="openTimerModal()" class="flex items-center space-x-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-sm font-semibold transition">
+                    <i class="fa-solid fa-stopwatch animate-pulse"></i>
+                    <span id="navTimerDisplay">25:00</span>
+                </button>
+                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Toggle Theme">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        <!-- Banner Grid: Motivational Shayari & Countdown Timer -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Countdown Timer Card (1 Col) -->
+            <div class="glass-card rounded-2xl p-5 shadow-xl border border-emerald-500/20 relative overflow-hidden flex flex-col justify-between">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold tracking-wider uppercase text-emerald-400 flex items-center gap-1.5">
+                        <i class="fa-regular fa-clock"></i> NEET Exam Countdown
+                    </span>
+                    <button onclick="changeExamDatePrompt()" class="text-xs text-slate-400 hover:text-emerald-400 underline" title="Change target date">
+                        Date Badlo
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-4 gap-2 text-center my-2">
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <span id="cdDays" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 block font-mono">00</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Days</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <span id="cdHours" class="text-2xl sm:text-3xl font-extrabold text-cyan-400 block font-mono">00</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Hours</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <span id="cdMins" class="text-2xl sm:text-3xl font-extrabold text-teal-400 block font-mono">00</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Mins</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <span id="cdSecs" class="text-2xl sm:text-3xl font-extrabold text-amber-400 block font-mono">00</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Secs</span>
+                    </div>
+                </div>
+
+                <div class="mt-3 text-xs text-slate-400 flex justify-between items-center bg-slate-900/40 px-3 py-2 rounded-xl">
+                    <span>Target Date: <strong id="displayExamDate" class="text-slate-200">03 May 2026</strong></span>
+                    <span class="text-emerald-400 font-medium"><i class="fa-solid fa-heart-pulse"></i> Har pal kimti hai!</span>
+                </div>
+            </div>
+
+            <!-- Motivational Shayari Banner (2 Cols) -->
+            <div class="lg:col-span-2 glass-card rounded-2xl p-5 shadow-xl border border-teal-500/20 relative flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold tracking-wider uppercase text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-fire text-amber-500"></i> Daily NEET Josh & Shayari
+                    </span>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="copyShayari()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700 transition" title="Copy Shayari">
+                            <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                        <button onclick="nextShayari()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg shadow-sm font-semibold flex items-center gap-1 transition">
+                            <i class="fa-solid fa-arrows-rotate"></i> Agli Shayari
+                        </button>
+                    </div>
+                </div>
+
+                <div class="my-auto py-2">
+                    <p id="shayariText" class="text-base sm:text-lg font-medium leading-relaxed text-slate-200 italic">
+                        "ना पूछो कि मेरी मंजिल कहाँ है, अभी तो सफर का इरादा किया है, ना हारूंगा हौसला उम्र भर, ये मैंने किसी से नहीं खुद से वादा किया है।"
+                    </p>
+                    <p id="shayariAuthor" class="text-xs text-emerald-400 font-semibold mt-2 text-right">~ Future Doctor Motivation</p>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/80 pt-2">
+                    <span>💡 Har 12 second me nayi shayari aati hai</span>
+                    <span id="shayariIndex" class="font-mono text-emerald-400">1 / 30</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Progress Overview & Subject Bars -->
+        <div class="glass-card rounded-2xl p-6 shadow-xl border border-slate-800">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                        Syllabus Progress Tracker
+                    </h2>
+                    <p class="text-xs text-slate-400">Theory, PYQs aur Revisions ke aadhar par progress</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block font-medium">Overall Complete</span>
+                        <span id="overallPercentage" class="text-2xl font-black text-emerald-400 font-mono">0%</span>
+                    </div>
+                    <div class="w-16 h-16 relative flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path id="overallCircle" class="text-emerald-500 transition-all duration-700" stroke-dasharray="0, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <i class="fa-solid fa-stethoscope absolute text-emerald-400 text-sm"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subject Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Physics -->
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-blue-500/20">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-sm font-bold text-blue-400 flex items-center gap-2">
+                            <i class="fa-solid fa-atom"></i> Physics
+                        </span>
+                        <span id="physicsPercent" class="text-sm font-extrabold text-blue-400 font-mono">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="physicsBar" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-2">
+                        <span id="physicsCount">0/0 Ch Completed</span>
+                        <span id="physicsPyqCount">0 PYQs done</span>
+                    </div>
+                </div>
+
+                <!-- Chemistry -->
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-amber-500/20">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-flask-vial"></i> Chemistry
+                        </span>
+                        <span id="chemistryPercent" class="text-sm font-extrabold text-amber-400 font-mono">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="chemistryBar" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-2">
+                        <span id="chemistryCount">0/0 Ch Completed</span>
+                        <span id="chemistryPyqCount">0 PYQs done</span>
+                    </div>
+                </div>
+
+                <!-- Biology -->
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-emerald-500/20">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                            <i class="fa-solid fa-dna"></i> Biology (360/360)
+                        </span>
+                        <span id="biologyPercent" class="text-sm font-extrabold text-emerald-400 font-mono">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="biologyBar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-2">
+                        <span id="biologyCount">0/0 Ch Completed</span>
+                        <span id="biologyPyqCount">0 PYQs done</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Section: Planner & Quick Formula Diary -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Daily Study Planner / To-Do -->
+            <div class="glass-card rounded-2xl p-5 shadow-xl border border-slate-800 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-emerald-400"></i> Daily Study Targets & Plan
+                        </h3>
+                        <span id="taskStats" class="text-xs bg-slate-800 text-emerald-400 px-2.5 py-1 rounded-full font-semibold">0 Done</span>
+                    </div>
+
+                    <!-- Input form for tasks -->
+                    <form id="todoForm" onsubmit="addTodoTask(event)" class="flex gap-2 mb-3">
+                        <input type="text" id="taskInput" placeholder="e.g. Optics ke 50 PYQs lagane hain..." required
+                            class="flex-1 bg-slate-900 border border-slate-700 text-sm text-slate-100 px-3.5 py-2 rounded-xl focus:outline-none focus:border-emerald-500">
+                        <select id="taskPriority" class="bg-slate-900 border border-slate-700 text-xs text-slate-200 px-2 rounded-xl focus:outline-none focus:border-emerald-500">
+                            <option value="high">High 🔥</option>
+                            <option value="med" selected>Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </form>
+
+                    <!-- Tasks List -->
+                    <div id="todoList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-slate-400 mt-3 pt-3 border-t border-slate-800">
+                    <span>Roz sone se pehle sab targets tick karein!</span>
+                    <button onclick="clearCompletedTodos()" class="text-red-400 hover:underline">Clear Done</button>
+                </div>
+            </div>
+
+            <!-- Important Notes & Formula Diary -->
+            <div class="glass-card rounded-2xl p-5 shadow-xl border border-slate-800 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark text-cyan-400"></i> Quick High-Yield Notes & Formulas
+                        </h3>
+                        <button onclick="openNoteModal()" class="text-xs bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-lg font-medium transition">
+                            <i class="fa-solid fa-pen-nib mr-1"></i> Naya Note Likhein
+                        </button>
+                    </div>
+
+                    <div id="notesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-56 overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-800 flex justify-between items-center">
+                    <span>Revision time par formula & key points turant recall karein.</span>
+                    <span id="notesCount" class="font-mono text-cyan-400">0 Notes</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- MAIN CHAPTER TRACKER SECTION -->
+        <div class="glass-card rounded-2xl p-6 shadow-xl border border-slate-800">
+            <!-- Header & Filter Row -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-800">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-emerald-400"></i>
+                        Class 11th & 12th Master Chapter Tracker
+                    </h2>
+                    <p class="text-xs text-slate-400">Theory, PYQs count, multiple revisions & mock test notes track karein</p>
+                </div>
+
+                <!-- Add Custom Chapter button & search -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="relative w-full sm:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
+                        <input type="text" id="chapterSearch" oninput="renderChapters()" placeholder="Chapter search karein..." 
+                            class="w-full bg-slate-900 border border-slate-700 text-xs text-slate-100 pl-8 pr-3 py-2 rounded-xl focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <button onclick="openAddChapterModal()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-plus-circle"></i> Missing Chapter Jodein
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Selection Bar: Class 11 vs Class 12 and Subjects -->
+            <div clas
